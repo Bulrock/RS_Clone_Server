@@ -12,10 +12,16 @@ const db = "mongodb+srv://Admin:nn6vJw.n7d3FXZs@cluster0.pzvo6cd.mongodb.net/gam
 
 const userSchema = new mongoose.Schema({
   username: String,
-  password: String
+  password: String,
+  userHighScores: [
+    {
+      gamename: String,
+      score: String
+    },
+  ]
 });
 
-const User = mongoose.model('User', userSchema);
+const Users = mongoose.model('users', userSchema);
 
 mongoose.set('strictQuery', true);
 mongoose
@@ -29,20 +35,39 @@ server.listen(PORT, (error) => {
   error ? console.log(error) : console.log(`listening port: ${PORT}`)
 });
 
-server.get("/", function(request, response){
-  response.send(`<h2>${request.method}</h2>`);
-});
-
 server.post("/user/login", function(request, response){
   console.log(request.body);
   const username = request.body.username;
   const password = request.body.password;
-  User.findOne({username: username}, (err, user) => {
+  Users.findOne({username: username}, (err, user) => {
     if(user?.password === password) {
-      response.send({success: true})
+      response.send({success: true, user})
     } else {
       response.send({success: false, error: "Username or password isn't correct"})
     }
   })
 });
 
+server.post("/user/register", function(request, response){
+  console.log(request.body);
+  const username = request.body.username;
+  const password = request.body.password;
+  Users.exists({username: username}, (err, user) => {
+    if(user === null) {
+      Users.updateOne(
+        {username: username},
+        { $set:
+          {
+          username: username,
+          password: password,
+          }
+        },
+        {upsert: true})
+        .then(()=>{
+          response.send({success: true, message: "User added successfully"})
+        });
+    } else {
+      response.send({success: false, error: "Username is already exists"})
+    }
+  })
+});
