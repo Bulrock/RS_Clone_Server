@@ -16,7 +16,14 @@ const userSchema = new mongoose.Schema({
   highScores: Object
 });
 
-const Users = mongoose.model('users', userSchema);
+const Users = mongoose.model('User', userSchema);
+
+const scoresSchema = new mongoose.Schema({
+  gamename: String,
+  userScores: Object
+});
+
+const Games = mongoose.model('Game', scoresSchema);
 
 mongoose.set('strictQuery', true);
 mongoose
@@ -77,7 +84,6 @@ server.post("/user/addscore", function(request, response){
 
   Users.findOne({username: username}, (err, user) => {
     if(err) {console.log(`Error: ${err}`)}
-    console.log(user);
     if(user !== null) {
       if(user.highScores && user.highScores[gamename]) {
         if(user.highScores[gamename] < score) {
@@ -110,5 +116,124 @@ server.post("/user/addscore", function(request, response){
         })
       }
     }
-  })
+  });
 });
+
+server.post("/top/addscore", function(request, response){
+  console.log(request.body);
+  const username = request.body.username;
+  const gamename = request.body.gamename;
+  const score = request.body.score;
+
+  Games.findOne({gamename: gamename}, (err, game) => {
+    if(err) {
+      response.send({success: false, message: `Score wasn't added to top 10: ${err.message}`});
+    }
+    if(game !== null) {
+      if(Object.values(game.userScores).length < 10) {
+        game.userScores[username] = score;
+      } else {
+        game.userScores[username] = score;
+      }
+      const filter = {gamename: gamename};
+      const update = {userScores: sortObject(game.userScores)};
+
+      Games.findOneAndUpdate(filter, update, { new: true }, (err, user) => {
+        if(err) {
+          response.send({success: false, message: `Top wasn't updated: ${err.message}`});
+        } else {
+          response.send({success: true, message: "Top updated successfully"});
+        }
+      })
+    } else {
+      Games.exists({gamename: gamename}, (err, game) => {
+        if(game === null) {
+          Games.updateOne(
+            {gamename: gamename},
+            { $set:
+              {
+              gamename: gamename,
+              userScores: {[username]: score},
+              }
+            },
+            {upsert: true})
+            .then(()=>{
+              response.send({success: true, message: "Top updated successfully"})
+            });
+        } else {
+          response.send({success: false, error: `Top wasn't updated: ${err.message}`})
+        }
+      })
+    }
+  });
+})
+
+server.get("/user/scores", function(request, response){
+  console.log(request.body);
+  const username = request.body.username;
+  const option = request.body.option;
+  let sortOption;
+
+  switch(option) {
+    case "ascScore":
+      sortOption = ascScore;
+      break;
+    case "descScore":
+      sortOption = descScore;
+      break;
+    case "ascGame":
+      sortOption = ascGame;
+      break;
+    case "descGame":
+      sortOption = descGame;
+      break;
+  }
+
+  Users.findOne({username: username}, (err, user) => {
+    if(err) {console.log(`Error: ${err}`)}
+    if(user !== null) {
+      response.send({success: true, [username]: sortObject(user.highScores, sortOption)});
+    } else {
+      response.send({success: false, message: "Score isn't available"});
+    }
+  });
+});
+
+server.get("/game/top10", function(request, response){
+  console.log(request.body);
+  const gamename = request.body.gamename;
+
+  Games.findOne({gamename: gamename}, (err, game) => {
+    if(err) {console.log(`Error: ${err}`)}
+    if(game !== null) {
+      response.send({success: true, [gamename]: game.userScores});
+    } else {
+      response.send({success: false, message: "Top isn't available"});
+    }
+  });
+});
+
+const descScore = (a, b) => b[1] - a[1];
+const ascScore = (a, b) => a[1] - b[1];
+const ascGame = (a, b) => a[0].localeCompare(b[0]);
+const descGame = (a, b) => b[0].localeCompare(a[0]);
+
+function sortObject(object, func = descScore) {
+  let sortable = [];
+  for (let key in object) {
+    sortable.push([key, object[key]]);
+  }
+
+  sortable.sort(func);
+
+  if (sortable.length > 9) {
+    sortable = sortable.slice(0, 9);
+  }
+
+  let orderedObj = {};
+  for (let idx in sortable) {
+    orderedObj[sortable[idx][0]] = sortable[idx][1];
+  }
+
+  return orderedObj;
+}
