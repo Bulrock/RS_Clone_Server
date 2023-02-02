@@ -2,12 +2,14 @@ const express = require("express");
 const pass = require("path");
 const mongoose = require("mongoose");
 const bp = require('body-parser');
+const cors = require('cors')
 
 const server = express();
+server.use(cors());
 server.use(bp.json());
 server.use(bp.urlencoded({ extended: true }));
 
-const PORT = 3000;
+const PORT = process.env.PORT || 5002;
 const db = "mongodb+srv://Admin:nn6vJw.n7d3FXZs@cluster0.pzvo6cd.mongodb.net/games-stack?retryWrites=true&w=majority";
 
 const userSchema = new mongoose.Schema({

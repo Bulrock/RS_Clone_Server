@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireTeam's_Server</title>
+</head>
+<body style="background-color: bisque;">
+  <h1>Server API</h1>
+  <ul style="font: bold large sans-serif;">
+    <li style="margin-bottom: 20px;">Register new User: POST request with body: <br>
+      { 'username': 'User_Name', 'password': '12345' } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/register' <br>
+    </li>
+    <li style="margin-bottom: 20px;">Login User: POST request with body: <br>
+      { 'username': 'User_Name', 'password': '12345' } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/login' <br>
+    </li>
+    <li style="margin-bottom: 20px;">Add current game score to User's scores statistic: POST request with body: <br>
+      { 'username': 'User_Name', 'gamename': 'tetris', 'score': 1 } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/addscore' <br>
+    </li>
+    <li style="margin-bottom: 20px;">Add current game score to TOP10 game scores statistic: POST request with body: <br>
+      { 'username': 'User_Name', 'gamename': 'tetris', 'score': 1 } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/top/addscore' <br>
+    </li>
+    <li style="margin-bottom: 20px;">Get current user scores with sorting ability: GET request with body: <br>
+      { 'username': 'User_Name', 'options': 'ascScore'/'descScore'/'ascGame'/'descGame'/ } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/scores' <br>
+    </li>
+    <li style="margin-bottom: 20px;">Get specified game TOP10 with sorting ability: GET request with body: <br>
+      { 'gamename': 'tetris', 'options': 'ascScore'/'descScore'/'ascName'/'descName'/ } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/game/top10' <br>
+    </li>
+  </ul>
+</body>
+</html>
