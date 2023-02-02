@@ -130,21 +130,20 @@ server.post("/top/addscore", function(request, response){
       response.send({success: false, message: `Score wasn't added to top 10: ${err.message}`});
     }
     if(game !== null) {
-      if(Object.values(game.userScores).length < 10) {
+      if(Object.values(game.userScores).length <= 10) {
+        console.log("!!!! less than 10")
         game.userScores[username] = score;
-      } else {
-        game.userScores[username] = score;
-      }
-      const filter = {gamename: gamename};
-      const update = {userScores: sortObject(game.userScores)};
+        const filter = {gamename: gamename};
+        const update = {userScores: sortObject(game.userScores)};
 
-      Games.findOneAndUpdate(filter, update, { new: true }, (err, user) => {
-        if(err) {
-          response.send({success: false, message: `Top wasn't updated: ${err.message}`});
-        } else {
-          response.send({success: true, message: "Top updated successfully"});
-        }
-      })
+        Games.findOneAndUpdate(filter, update, { new: true }, (err, user) => {
+          if(err) {
+            response.send({success: false, message: `Top wasn't updated: ${err.message}`});
+          } else {
+            response.send({success: true, message: "Top updated successfully"});
+          }
+        })
+      }
     } else {
       Games.exists({gamename: gamename}, (err, game) => {
         if(game === null) {
@@ -226,8 +225,8 @@ function sortObject(object, func = descScore) {
 
   sortable.sort(func);
 
-  if (sortable.length > 9) {
-    sortable = sortable.slice(0, 9);
+  if (sortable.length > 10) {
+    sortable = sortable.slice(0, 10);
   }
 
   let orderedObj = {};
