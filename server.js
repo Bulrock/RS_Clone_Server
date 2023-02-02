@@ -201,11 +201,28 @@ server.get("/user/scores", function(request, response){
 server.get("/game/top10", function(request, response){
   console.log(request.body);
   const gamename = request.body.gamename;
+  const option = request.body.option;
+  let sortOption;
+
+  switch(option) {
+    case "ascScore":
+      sortOption = ascScore;
+      break;
+    case "descScore":
+      sortOption = descScore;
+      break;
+    case "ascName":
+      sortOption = ascName;
+      break;
+    case "descName":
+      sortOption = descName;
+      break;
+  }
 
   Games.findOne({gamename: gamename}, (err, game) => {
     if(err) {console.log(`Error: ${err}`)}
     if(game !== null) {
-      response.send({success: true, [gamename]: game.userScores});
+      response.send({success: true, [gamename]: sortObject(game.userScores, sortOption)});
     } else {
       response.send({success: false, message: "Top isn't available"});
     }
@@ -216,6 +233,8 @@ const descScore = (a, b) => b[1] - a[1];
 const ascScore = (a, b) => a[1] - b[1];
 const ascGame = (a, b) => a[0].localeCompare(b[0]);
 const descGame = (a, b) => b[0].localeCompare(a[0]);
+const ascName = (a, b) => a[0].localeCompare(b[0]);
+const descName = (a, b) => b[0].localeCompare(a[0]);
 
 function sortObject(object, func = descScore) {
   let sortable = [];
