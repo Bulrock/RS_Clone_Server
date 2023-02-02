@@ -39,6 +39,37 @@ server.listen(PORT, (error) => {
   error ? console.log(error) : console.log(`listening port: ${PORT}`)
 });
 
+server.get("/", function(request, response){
+  response.status(200).send(`
+  <h1>Server API</h1>
+  <ul>
+    <li>Register new User: POST request with body: <br>
+      { 'username': 'User_Name', 'password': '12345' } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/register' <br>
+    </li>
+    <li>Login User: POST request with body: <br>
+      { 'username': 'User_Name', 'password': '12345' } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/login' <br>
+    </li>
+    <li>Add current game score to User's scores statistic: POST request with body: <br>
+      { 'username': 'User_Name', 'gamename': 'tetris', 'score': 1 } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/addscore' <br>
+    </li>
+    <li>Add current game score to TOP10 game scores statistic: POST request with body: <br>
+      { 'username': 'User_Name', 'gamename': 'tetris', 'score': 1 } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/top/addscore' <br>
+    </li>
+    <li>Get current user scores with sorting ability: GET request with body: <br>
+      { 'username': 'User_Name', 'options': 'ascScore'/'descScore'/'ascGame'/'descGame'/ } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/scores' <br>
+    </li>
+    <li>Get specified game TOP10 with sorting ability: GET request with body: <br>
+      { 'gamename': 'tetris', 'options': 'ascScore'/'descScore'/'ascName'/'descName'/ } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/game/top10' <br>
+    </li>
+  </ul>`)
+});
+
 server.post("/user/login", function(request, response){
   console.log(request.body);
   const username = request.body.username;
