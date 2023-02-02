@@ -131,7 +131,6 @@ server.post("/top/addscore", function(request, response){
     }
     if(game !== null) {
       if(Object.values(game.userScores).length <= 10) {
-        console.log("!!!! less than 10")
         game.userScores[username] = score;
         const filter = {gamename: gamename};
         const update = {userScores: sortObject(game.userScores)};
