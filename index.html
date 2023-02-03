@@ -17,7 +17,7 @@
       { 'username': 'User_Name', 'password': '12345' } <br>
       on 'https://rsclonetestserver-production.up.railway.app/user/login' <br>
     </li>
-    <li style="margin-bottom: 20px;">Check existence of Username: GET request with body: <br>
+    <li style="margin-bottom: 20px;">Check existence of Username: POST request with body: <br>
       { 'username': 'User_Name' } <br>
       on 'https://rsclonetestserver-production.up.railway.app/user/check' <br>
     </li>
@@ -29,11 +29,11 @@
       { 'username': 'User_Name', 'gamename': 'tetris', 'score': 1 } <br>
       on 'https://rsclonetestserver-production.up.railway.app/top/addscore' <br>
     </li>
-    <li style="margin-bottom: 20px;">Get current user scores with sorting ability: GET request with body: <br>
+    <li style="margin-bottom: 20px;">Get current user scores with sorting ability: POST request with body: <br>
       { 'username': 'User_Name', 'options': 'ascScore'/'descScore'/'ascGame'/'descGame'/ } <br>
       on 'https://rsclonetestserver-production.up.railway.app/user/scores' <br>
     </li>
-    <li style="margin-bottom: 20px;">Get specified game TOP10 with sorting ability: GET request with body: <br>
+    <li style="margin-bottom: 20px;">Get specified game TOP10 with sorting ability: POST request with body: <br>
       { 'gamename': 'tetris', 'options': 'ascScore'/'descScore'/'ascName'/'descName'/ } <br>
       on 'https://rsclonetestserver-production.up.railway.app/game/top10' <br>
     </li>

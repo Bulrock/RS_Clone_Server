@@ -51,7 +51,7 @@ server.get("/", function(request, response){
       { 'username': 'User_Name', 'password': '12345' } <br>
       on 'https://rsclonetestserver-production.up.railway.app/user/login' <br>
     </li>
-    <li>Check existence of Username: GET request with body: <br>
+    <li>Check existence of Username: POST request with body: <br>
       { 'username': 'User_Name', } <br>
       on 'https://rsclonetestserver-production.up.railway.app/user/check' <br>
     </li>
@@ -63,11 +63,11 @@ server.get("/", function(request, response){
       { 'username': 'User_Name', 'gamename': 'tetris', 'score': 1 } <br>
       on 'https://rsclonetestserver-production.up.railway.app/top/addscore' <br>
     </li>
-    <li>Get current user scores with sorting ability: GET request with body: <br>
+    <li>Get current user scores with sorting ability: POST request with body: <br>
       { 'username': 'User_Name', 'options': 'ascScore'/'descScore'/'ascGame'/'descGame'/ } <br>
       on 'https://rsclonetestserver-production.up.railway.app/user/scores' <br>
     </li>
-    <li>Get specified game TOP10 with sorting ability: GET request with body: <br>
+    <li>Get specified game TOP10 with sorting ability: POST request with body: <br>
       { 'gamename': 'tetris', 'options': 'ascScore'/'descScore'/'ascName'/'descName'/ } <br>
       on 'https://rsclonetestserver-production.up.railway.app/game/top10' <br>
     </li>
@@ -113,7 +113,7 @@ server.post("/user/register", function(request, response){
   })
 });
 
-server.get("/user/check", function(request, response){
+server.post("/user/check", function(request, response){
   console.log(request.body);
   const username = request.body.username;
 
@@ -216,7 +216,7 @@ server.post("/top/addscore", function(request, response){
   });
 })
 
-server.get("/user/scores", function(request, response){
+server.post("/user/scores", function(request, response){
   console.log(request.body);
   const username = request.body.username;
   const option = request.body.option;
@@ -247,7 +247,7 @@ server.get("/user/scores", function(request, response){
   });
 });
 
-server.get("/game/top10", function(request, response){
+server.post("/game/top10", function(request, response){
   console.log(request.body);
   const gamename = request.body.gamename;
   const option = request.body.option;
