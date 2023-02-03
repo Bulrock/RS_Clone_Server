@@ -51,6 +51,10 @@ server.get("/", function(request, response){
       { 'username': 'User_Name', 'password': '12345' } <br>
       on 'https://rsclonetestserver-production.up.railway.app/user/login' <br>
     </li>
+    <li>Check existence of Username: GET request with body: <br>
+      { 'username': 'User_Name', } <br>
+      on 'https://rsclonetestserver-production.up.railway.app/user/check' <br>
+    </li>
     <li>Add current game score to User's scores statistic: POST request with body: <br>
       { 'username': 'User_Name', 'gamename': 'tetris', 'score': 1 } <br>
       on 'https://rsclonetestserver-production.up.railway.app/user/addscore' <br>
@@ -105,6 +109,19 @@ server.post("/user/register", function(request, response){
         });
     } else {
       response.send({success: false, error: "Username is already exists"})
+    }
+  })
+});
+
+server.get("/user/check", function(request, response){
+  console.log(request.body);
+  const username = request.body.username;
+
+  Users.exists({username: username}, (err, user) => {
+    if(user === null) {
+      response.send({success: false, message: "Username is available"});
+    } else {
+      response.send({success: true, message: "Username is already exists"})
     }
   })
 });
